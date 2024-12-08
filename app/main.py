@@ -1,54 +1,51 @@
 class Animal:
     alive = []
 
-    def __init__(self, name, health: int = 100, is_hidden: bool = False):
+    def __init__(self,
+                 name: str,
+                 health: int = 100,
+                 hidden: bool = False) -> None:
         self.name = name
         self.health = health
-        self.is_hidden = is_hidden
-        self.alive.append(self)
+        self.hidden = hidden
+        Animal.alive.append(self)
 
+    def die(self) -> None:
+        Animal.alive.remove(self)
 
-    def die(self):
-        if self in Animal.alive:
-            self.alive.remove(self)
-
-    def __repr__(self):
-        return f"Animal(name={self.name}, health={self.health}, hidden={self.is_hidden})"
+    def __repr__(self) -> str:
+        return (f"{{Name: {self.name}, "
+                f"Health: {self.health}, "
+                f"Hidden: {self.hidden}}}")
 
     @classmethod
-    def print_alive(cls):
-        return "\n".join(str(animal) for animal in cls.alive)
+    def print_alive(cls) -> None:
+        return [
+            {
+                "Name": animal.name,
+                "Health": animal.health,
+                "Hidden": animal.hidden
+            } for animal in cls.alive
+        ]
 
 
 class Herbivore(Animal):
 
     def hide(self) -> bool:
-        self.is_hidden = not self.is_hidden
-        return self.is_hidden
+        self.hidden = not self.hidden
+        return self.hidden
 
 
-class Сarnivore(Animal):
+class Carnivore(Animal):
 
-    def bite(self, target):
-            if not target.is_hidden:
-                target.health -= 50
-                if target.health <= 0:
-                    target.health = 0
-                    target.die()
-            else:
-                target.health = 100
-
-
-
-
-rabbit = Herbivore("Rabbit")
-print(rabbit)
-lion = Сarnivore("Lion")
-print(lion)
-
-
-lion.bite(rabbit)
-print(rabbit.health)
-lion.bite(rabbit)
-print(rabbit.health)
-print(Animal.alive)
+    def bite(self, target: Herbivore) -> bool:
+        if isinstance(target, Carnivore):
+            print("Хижак не може вкусити іншого хижака")
+            return
+        if not target.hidden:
+            target.health -= 50
+            if target.health <= 0:
+                target.health = 0
+                target.die()
+        if target.hidden:
+            target.health = 100
