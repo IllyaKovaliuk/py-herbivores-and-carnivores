@@ -40,7 +40,7 @@ class Carnivore(Animal):
 
     def bite(self, target: Herbivore) -> bool:
         if isinstance(target, Carnivore):
-            print("Хижак не може вкусити іншого хижака")
+            print("Хижак не може вкусити іншого ")
             return
         if not target.hidden:
             target.health -= 50
